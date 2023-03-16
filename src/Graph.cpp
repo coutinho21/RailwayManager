@@ -11,34 +11,38 @@ void Graph::readFiles(const string &file1, const string &file2) {
     std::getline(linesFile, line, '\n');  //step var names ahead
 
     if (stationsFile.is_open()) {
-        cout << "File opened" << endl;
-        while (getline(stationsFile, line)) {
+        while (std::getline(stationsFile, line, '\n')) {
             istringstream iss(line);
-            string name, district, municipality, township, lineName;
-            iss >> name >> district >> municipality >> township >> lineName;
-            auto *s = new Station(name, district, municipality, township, lineName);
+            vector<string> temp;
+            string name, district, municipality, township, lineName, tempstr;
+            while ((std::getline(iss, tempstr, ','))) {
+                if (!tempstr.empty() && tempstr[tempstr.size() - 1] == '\r')
+                    tempstr.erase(tempstr.size() - 1);
+                temp.push_back(tempstr);
+            }
+            auto *s = new Station(temp[0], temp[1], temp[2], temp[3], temp[4]);
             this->addStation(s);
+
         }
-        cout << "File closed" << endl;
         stationsFile.close();
-    } else {
+    } else
         cout << "Unable to open file" << endl;
-    }
+
+/*
     if (linesFile.is_open()) {
-        while (getline(linesFile, line)) {
+        while (getline(linesFile, line, ',')) {
             istringstream iss(line);
             string stringStationA, stringStationB, capacity, service;
             iss >> stringStationA >> stringStationB >> capacity >> service;
             Station *stationA = this->getStation(stringStationA);
             Station *stationB = this->getStation(stringStationB);
-            Trip *s = new Trip(stationA, stationB, stoi(capacity), service);
-            this->addLine(lineName, s);
+            // Trip *s = new Trip(stationA, stationB, stoi(capacity), service);    // nao me lembro para que era isto???
+            this->addLine(stationA->getLine(), stationA);
         }
         linesFile.close();
-    } else {
+    } else
         cout << "Unable to open file" << endl;
-    }
-    cout << "END" << endl;
+*/
 }
 
 void Graph::addStation(Station *pStation) {
@@ -54,7 +58,7 @@ void Graph::addLine(const string &basicString, Station *pStation) {
     lines[basicString].push_back(pStation);
 }
 
-const unordered_map<string, Station *> &Graph::getStations() const {
+unordered_map<string, Station *> &Graph::getStations(){
     return stations;
 }
 
@@ -62,7 +66,7 @@ void Graph::setStations(const unordered_map<string, Station *> &stations) {
     Graph::stations = stations;
 }
 
-const unordered_map<string, vector<Station *>> &Graph::getLines() const {
+unordered_map<string, vector<Station *>> &Graph::getLines(){
     return lines;
 }
 
@@ -79,8 +83,8 @@ void Graph::setSize(int size) {
 }
 
 void Graph::printStations() {
-    cout << "HERE" << endl;
     for (auto &station: this->stations)
-        cout << station.first << endl;
-    cout << "ALSO HERE" << endl;
+        cout << station.second->getName() << ' ' << station.second->getDistrict() <<
+        ' ' << station.second->getMunicipality() << ' ' << station.second->getTownship() <<
+        ' ' << station.second->getLine() << endl;
 }

@@ -15,11 +15,11 @@ class Graph {
 public:
     void readFiles(const string &file1, const string &file2);
 
-    const unordered_map<string, Station *> &getStations() const;
+    unordered_map<string, Station *> &getStations();
 
     void setStations(const unordered_map<string, Station *> &stations);
 
-    const unordered_map<string, vector<Station *>> &getLines() const;
+    unordered_map<string, vector<Station *>> &getLines();
 
     void setLines(const unordered_map<string, vector<Station *>> &lines);
 
@@ -30,17 +30,17 @@ public:
     // Read the files and create the graph
     void printStations();
 
-private:
-    unordered_map<string, Station *> stations; //nodes
-    unordered_map<string, vector<Station *>> lines; //edges
-
-    int size{};
-
     void addStation(Station *pStation);
 
     Station *getStation(const string &basicString);
 
     void addLine(const string &basicString, Station *pStation);
+
+private:
+    unordered_map<string, Station *> stations; //nodes
+    unordered_map<string, vector<Station *>> lines; //edges
+
+    int size{};
 };
 
 

@@ -3,19 +3,22 @@
 
 
 #include "Station.h"
+#include <string>
+
+using namespace std;
 
 class Trip {
 public:
 
-    Trip(Station *source, Station *destination, int capacity, string service);
+    Trip(Station *source, Station *destination, int capacity, const string &service);
 
     Station *getSource() const;
 
-    void setSource(const Station &source);
+    void setSource(Station *source);
 
     Station *getDestination() const;
 
-    void setDestination(const Station &destination);
+    void setDestination(Station *destination);
 
     int getCapacity() const;
 
@@ -26,10 +29,11 @@ public:
     void setService(const string &service);
 
 private:
-    Station source, destination;
+    Station *source;
+    Station *destination;
     int capacity;
     string service;
 };
 
 
-#endif //RAILWAYMANAGER_TRIP_H
+#endif

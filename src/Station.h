@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "Trip.h"
 
 using namespace std;
 
@@ -34,7 +33,6 @@ public:
 
 private:
     string name, district, municipality, township, line;
-    vector<Trip *> trips;
 };
 
 
