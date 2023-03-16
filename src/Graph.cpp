@@ -14,30 +14,55 @@ void Graph::readFiles(const string &file1, const string &file2) {
         while (std::getline(stationsFile, line, '\n')) {
             istringstream iss(line);
             vector<string> temp;
-            string name, district, municipality, township, lineName, tempstr;
+            string tempstr;
             while ((std::getline(iss, tempstr, ','))) {
-                if (!tempstr.empty() && tempstr[tempstr.size() - 1] == '\r')
+                if (!tempstr.empty() && tempstr[tempstr.size() - 1] == '\r') {
                     tempstr.erase(tempstr.size() - 1);
+                }
+
+                // Check if the current value starts with a double quote
+                if (tempstr.front() == '\"') {
+                    // If it does, continue reading from the input stream until
+                    // we encounter another double quote
+                    string quotedString = tempstr;
+                    while (std::getline(iss, tempstr, ',') && tempstr.back() != '\"') {
+                        quotedString += ',' + tempstr;
+                    }
+                    quotedString += ',' + tempstr;
+
+                    // Remove the double quotes from the resulting string
+                    quotedString.erase(remove(quotedString.begin(), quotedString.end(), '\"'), quotedString.end());
+
+                    tempstr = quotedString;
+                }
+
                 temp.push_back(tempstr);
             }
             auto *s = new Station(temp[0], temp[1], temp[2], temp[3], temp[4]);
             this->addStation(s);
-
         }
+
+
         stationsFile.close();
     } else
         cout << "Unable to open file" << endl;
 
 /*
     if (linesFile.is_open()) {
-        while (getline(linesFile, line, ',')) {
+        while (std::getline(linesFile, line, '\n')) {
             istringstream iss(line);
-            string stringStationA, stringStationB, capacity, service;
-            iss >> stringStationA >> stringStationB >> capacity >> service;
-            Station *stationA = this->getStation(stringStationA);
+            vector<string> temp;
+            string stringStationA, stringStationB, capacity, service, tempstr;
+            while ((std::getline(iss, tempstr, ','))) {
+                if (!tempstr.empty() && tempstr[tempstr.size() - 1] == '\r')
+                    tempstr.erase(tempstr.size() - 1);
+                temp.push_back(tempstr);
+            }
+            Station *stationA = this->getStation(temp[0]);
             Station *stationB = this->getStation(stringStationB);
             // Trip *s = new Trip(stationA, stationB, stoi(capacity), service);    // nao me lembro para que era isto???
             this->addLine(stationA->getLine(), stationA);
+
         }
         linesFile.close();
     } else
@@ -46,8 +71,10 @@ void Graph::readFiles(const string &file1, const string &file2) {
 }
 
 void Graph::addStation(Station *pStation) {
-    stations[pStation->getName()] = pStation;
-    size++;
+    if( stations.find(pStation->getName()) == stations.end()) {
+        stations[pStation->getName()] = pStation;
+        size++;
+    }
 }
 
 Station *Graph::getStation(const string &basicString) {
