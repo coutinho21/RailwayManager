@@ -6,10 +6,11 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-#include "Station.h"
-#include "Trip.h"
+#include "StationTrip.h"
 
 using namespace std;
+
+// Graph class represents a directed graph
 
 class Graph {
 public:
@@ -34,11 +35,13 @@ public:
 
     Station *getStation(const string &basicString);
 
+    void addEdge(Station *source, Station *destination, int capacity, const string &service);
+
     void addLine(const string &basicString, Station *pStation);
 
 private:
-    unordered_map<string, Station *> stations; //nodes
-    unordered_map<string, vector<Station *>> lines; //edges
+    unordered_map<string, Station *> stations; // nodes of the graph
+    unordered_map<string, vector<Station *>> lines; // lines of the trains
 
     int size{};
 };

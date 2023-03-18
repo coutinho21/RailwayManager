@@ -29,6 +29,9 @@ int readOption() {
 
 int main() {
     railway.readFiles("../data/stations.csv", "../data/network.csv");
-    railway.printStations();
+    //railway.printStations();
+    for(auto &station : railway.getStations()) {
+        station.second->printConnections();
+    }
     return 0;
 }
