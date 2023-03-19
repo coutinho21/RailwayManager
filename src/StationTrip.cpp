@@ -71,14 +71,13 @@ void Station::setVisited(bool visited) {
 }
 
 void Station::printConnections() {
-    cout << "Station: " << name << endl;
-    for (Trip *trip : trips) {
+    cout << "\nStation: " << name << endl;
+    for (auto &trip : trips) {
         cout << "\tDestination: " << trip->getDestination()->getName() << " - Capacity: " << trip->getCapacity() << " - Service: "
              << trip->getService() << endl;
     }
     cout << "\n";
 }
-
 
 Station *Trip::getSource() const {
     return source;

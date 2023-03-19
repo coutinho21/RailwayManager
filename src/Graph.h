@@ -31,6 +31,8 @@ public:
     // Read the files and create the graph
     void printStations();
 
+    void printAllConnections();
+
     void addStation(Station *pStation);
 
     Station *getStation(const string &basicString);
@@ -38,6 +40,10 @@ public:
     void addEdge(Station *source, Station *destination, int capacity, const string &service);
 
     void addLine(const string &basicString, Station *pStation);
+
+    void printConnectionsTo(const string& stationName);
+
+    void dijkstra(const string& source, const string& destination);
 
 private:
     unordered_map<string, Station *> stations; // nodes of the graph
