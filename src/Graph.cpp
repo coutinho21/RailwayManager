@@ -121,8 +121,86 @@ void Graph::setSize(int size) {
 }
 
 void Graph::printStations() {
+    cout << "\nAll stations:" << endl;
     for (auto &station: this->stations)
-        cout << station.second->getName() << ' ' << station.second->getDistrict() <<
-        ' ' << station.second->getMunicipality() << ' ' << station.second->getTownship() <<
-        ' ' << station.second->getLine() << endl;
+        cout << "\tStation name -> " << station.second->getName() << endl
+        << "\tStation district -> " << station.second->getDistrict() << endl
+        << "\tStation municipality -> " << station.second->getMunicipality() << endl
+        << "\tStation township -> " << station.second->getTownship() << endl
+        << "\tStation line -> " << station.second->getLine() << endl << "\n\n";
+}
+
+void Graph::printAllConnections() {
+    cout << "\nAll connections:" << endl;
+    for (auto &station: this->stations)
+        station.second->printConnections();
+}
+
+void Graph::printConnectionsTo(const string& stationName) {
+    cout << "\nConnections to " << stationName << ':' << endl;
+    for(auto &station: this->stations){
+        for(auto &connection: station.second->getTrips()){
+            if(connection->getDestination()->getName() == stationName)
+                cout << '\t' << station.second->getName() << " -> " << connection->getDestination()->getName() << endl;
+        }
+    }
+
+}
+
+void Graph::dijkstra(const string &source, const string &destination) {
+    unordered_map<string, Station*> visited;
+    unordered_map<string, Station*> unvisited;
+    unordered_map<string, Station*> previous;
+    unordered_map<string, int> distance;
+
+    for(auto &station: stations){
+        distance[station.first] = INT_MAX;
+        unvisited[station.first] = station.second;
+    }
+
+    distance[source] = 0;
+
+    while(!unvisited.empty()){
+        Station* current = unvisited.begin()->second;
+        for(auto &station: unvisited){
+            if(distance[station.first] < distance[current->getName()])
+                current = station.second;
+        }
+
+        if(current->getName() == destination)
+            break;
+
+
+        unvisited.erase(current->getName());
+        visited[current->getName()] = current;
+
+        for(auto &connection: current->getTrips()){
+            if(visited.find(connection->getDestination()->getName()) == visited.end()){
+                int alt = distance[current->getName()] + 1;
+                if(alt < distance[connection->getDestination()->getName()]){
+                    distance[connection->getDestination()->getName()] = alt;
+                    previous[connection->getDestination()->getName()] = current;
+                }
+            }
+        }
+    }
+
+    vector<string> path;
+    Station* current = stations[destination];
+    while(current != nullptr){
+        path.push_back(current->getName());
+        current = previous[current->getName()];
+    }
+
+    if(path[path.size()-1] != source){
+        cout << "\nThere is no path from " << source << " to " << destination << endl;
+        return;
+    }
+
+    cout << "\nShortest path from " << source << " to " << destination << " is:" << endl;
+    for(int i = path.size() - 1; i >= 0; i--){
+        cout << '\t' << path[i];
+        cout << (i == 0 ? "" : " -> ");
+    }
+    cout << endl;
 }
