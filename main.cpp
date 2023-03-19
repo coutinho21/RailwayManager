@@ -35,6 +35,7 @@ int readOption() {
 string readInput(){
     string input;
     getline(cin >> ws, input);
+    cout << std::endl;
     return input;
 }
 
