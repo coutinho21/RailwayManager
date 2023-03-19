@@ -141,14 +141,13 @@ void Graph::printConnectionsTo(const string& stationName) {
     for(auto &station: this->stations){
         for(auto &connection: station.second->getTrips()){
             if(connection->getDestination()->getName() == stationName)
-                cout << station.second->getName() << " -> " << connection->getDestination()->getName() << endl;
+                cout << '\t' << station.second->getName() << " -> " << connection->getDestination()->getName() << endl;
         }
     }
 
 }
 
 void Graph::dijkstra(const string &source, const string &destination) {
-    unordered_map<string, Station*> stations = this->getStations();
     unordered_map<string, Station*> visited;
     unordered_map<string, Station*> unvisited;
     unordered_map<string, Station*> previous;
@@ -171,12 +170,13 @@ void Graph::dijkstra(const string &source, const string &destination) {
         if(current->getName() == destination)
             break;
 
+
         unvisited.erase(current->getName());
         visited[current->getName()] = current;
 
         for(auto &connection: current->getTrips()){
             if(visited.find(connection->getDestination()->getName()) == visited.end()){
-                int alt = distance[current->getName()] + connection->getCapacity();
+                int alt = distance[current->getName()] + 1;
                 if(alt < distance[connection->getDestination()->getName()]){
                     distance[connection->getDestination()->getName()] = alt;
                     previous[connection->getDestination()->getName()] = current;
@@ -190,6 +190,11 @@ void Graph::dijkstra(const string &source, const string &destination) {
     while(current != nullptr){
         path.push_back(current->getName());
         current = previous[current->getName()];
+    }
+
+    if(path[path.size()-1] != source){
+        cout << "\nThere is no path from " << source << " to " << destination << endl;
+        return;
     }
 
     cout << "\nShortest path from " << source << " to " << destination << " is:" << endl;

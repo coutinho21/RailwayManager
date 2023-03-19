@@ -24,10 +24,10 @@ void showListStationAttributes(){
 int readOption() {
     int option;
 
-    while (!(cin >> option)) {
+    if(!(cin >> option)) {
         cin.clear();
-        cin.ignore(1000000, '\n');
-        cout << "Invalid option. Try again.\n";
+        cin.ignore(1000, '\n');
+        return 100;
     }
     return option;
 }
