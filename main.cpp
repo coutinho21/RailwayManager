@@ -9,6 +9,10 @@ void showMenu() {
     cout << "\n0) Exit\n";
     cout << "1) List station attributes\n";
     cout << "2) Shortest path between two stations\n";
+    cout << "3) Maximum simultaneously travelling trains between two stations\n"; //2.1
+    cout << "4) Pairs of stations that require most amount of trains\n"; //2.2
+    cout << "5) Top-k municipalities and districts, regarding transportation needs\n";  //2.3
+    cout << "6) Maximum simultaneously arriving trains at a station\n"; //2.4
     cout << "Choose an option: ";
 }
 
@@ -91,6 +95,13 @@ int main() {
                 stationName2 = readInput();
                 railway.dijkstra(stationName, stationName2);
                 break;
+            case 3:
+                cout << "\nStation name: ";
+                stationName = readInput();
+                cout << "Station name: ";
+                stationName2 = readInput();
+                railway.maxFlow(stationName,stationName2);
+
             default:
                 cout << "\nInvalid option. Try again.\n";
         }
