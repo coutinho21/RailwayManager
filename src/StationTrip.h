@@ -48,10 +48,21 @@ public:
 
     void printConnections();
 
+    Trip *getPath() const;
+
+    void setPath(Trip *path);
+
+    const vector<Trip *> &getIncoming() const;
+
+    void setIncoming(const vector<Trip *> &incoming);
+
 private:
     string name, district, municipality, township, line;
     vector<Trip *> trips; // edges of the graph
     bool visited = false;
+    Trip *path = nullptr;
+
+    std::vector<Trip *> incoming;
 
 };
 
@@ -79,11 +90,22 @@ public:
 
     void setService(const string &service);
 
+    int getFlow() const;
+
+    void setFlow(int flow);
+
+    Trip *getReverse() const;
+
+    void setReverse(Trip *reverse);
+
 private:
     Station *source;
     Station *destination;
     int capacity;
+    int flow = 0;
     string service;
+    Trip *reverse = nullptr;
+
 };
 
 #endif

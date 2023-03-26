@@ -79,6 +79,28 @@ void Station::printConnections() {
     cout << "\n";
 }
 
+Trip *Station::getPath() const {
+    return path;
+}
+
+void Station::setPath(Trip *path) {
+    Station::path = path;
+}
+
+const vector<Trip *> &Station::getIncoming() const {
+    return incoming;
+}
+
+
+//*********//
+
+Trip::Trip(Station *source, Station *destination, int capacity, const string& service) {
+    this->source = source;
+    this->destination = destination;
+    this->capacity = capacity;
+    this->service = service;
+}
+
 Station *Trip::getSource() const {
     return source;
 }
@@ -111,10 +133,22 @@ void Trip::setService(const string &service) {
     Trip::service = service;
 }
 
-Trip::Trip(Station *source, Station *destination, int capacity, const string& service) {
-    this->source = source;
-    this->destination = destination;
-    this->capacity = capacity;
-    this->service = service;
-
+int Trip::getFlow() const {
+    return flow;
 }
+
+void Trip::setFlow(int flow) {
+    Trip::flow = flow;
+}
+
+Trip *Trip::getReverse() const {
+    return reverse;
+}
+
+void Trip::setReverse(Trip *reverse) {
+    Trip::reverse = reverse;
+}
+
+
+
+

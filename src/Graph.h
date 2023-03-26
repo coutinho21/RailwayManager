@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <queue>
 #include <unordered_map>
 #include "StationTrip.h"
 
@@ -46,11 +47,23 @@ public:
 
     void dijkstra(const string& source, const string& destination);
 
+    Station *findStation(const string& source);
+
+    bool bfskarp(const string& source, const string& target);
+
+    int maxFlow(const string &source, const string &destination);
+
+
+
+
 private:
     unordered_map<string, Station *> stations; // nodes of the graph
     unordered_map<string, vector<Station *>> lines; // lines of the trains
 
     int size{};
+
+
+
 };
 
 

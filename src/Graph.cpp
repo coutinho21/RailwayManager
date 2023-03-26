@@ -1,3 +1,4 @@
+
 #include "Graph.h"
 
 void Graph::readFiles(const string &file1, const string &file2) {
@@ -204,3 +205,89 @@ void Graph::dijkstra(const string &source, const string &destination) {
     }
     cout << endl;
 }
+
+Station *Graph::findStation(const string& source) {
+    for(const auto& station : stations){
+        if(station.first == source){
+            return station.second;
+        }
+    }
+    return nullptr;
+}
+
+
+bool Graph::bfskarp(const string& source, const string& destination){
+    std::queue<Station *> q;
+    for(auto station : stations){
+        station.second->setVisited(false);
+        station.second->setPath(nullptr);
+        for(auto e : station.second->getTrips()){
+            delete e->getReverse();
+            e->setReverse(nullptr);
+        }
+    }
+    q.push(findStation(source));
+    q.front()->setVisited(true);
+    while(!q.empty()){
+        auto v = q.front();
+        q.pop();
+        for(auto e : v->getTrips()){
+            auto w = e->getDestination();
+            if(!w->isVisited() && e->getCapacity() - e->getFlow() > 0){
+                w->setPath(e);
+                w->setVisited(true);
+                q.push(w);
+                if(w->getName() == destination) return true;
+            }
+        }
+        for(auto e : v->getIncoming()){
+            auto w = e->getSource();
+            if(!w->isVisited() && e->getFlow() != 0){
+                Trip* er = new Trip(e->getDestination(), e->getSource(), e->getFlow(), e->getService());
+                er->setFlow(0);
+                e->setReverse(er);
+                er->setReverse(e);
+                w->setVisited(true);
+                w->setPath(er);
+                q.push(w);
+            }
+        }
+    }
+    return false;
+}
+
+
+int Graph::maxFlow(const string &source, const string &destination){
+    for(auto station : stations){
+        for(auto trip : station.second->getTrips()){
+            trip->setFlow(0);
+        }
+    }
+    int total_flow = 0;
+    while(bfskarp(source, destination)){
+        int mrc = INT32_MAX;
+        auto e = findStation(destination)->getPath();
+        while(true){
+            if(e->getReverse()== nullptr && e->getCapacity() - e->getFlow() < mrc) mrc = e->getCapacity() - e->getFlow();
+            if(e->getReverse()!= nullptr && e->getReverse()->getFlow() < mrc) mrc = e->getReverse()->getFlow();
+            if(e->getSource()->getName() == source) break;
+            e = e->getSource()->getPath();
+        }
+        e = findStation(destination)->getPath();
+        while(true){
+            if(e->getReverse() != nullptr){
+                e->getReverse()->setFlow(e->getReverse()->getFlow() - mrc);
+            }
+            else{
+                e->setFlow(e->getFlow() + mrc);
+            }
+            if(e->getSource()->getName() == source) break;
+            e = e->getSource()->getPath();
+        }
+        total_flow += mrc;
+    }
+    return total_flow;
+}
+
+
+
