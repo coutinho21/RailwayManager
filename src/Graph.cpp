@@ -316,7 +316,7 @@ void Graph::maxFlow(const string &source, const string &destination){
         total_flow += mrc;
     }
 
-    if(total_flow == 0){
+    if(!total_flow){
         cout << "\nThere is no path from " << source << " to " << destination << endl << ".\n";
     }
     else {
