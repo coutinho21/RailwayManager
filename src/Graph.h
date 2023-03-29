@@ -1,8 +1,7 @@
 #ifndef RAILWAYMANAGER_GRAPH_H
 #define RAILWAYMANAGER_GRAPH_H
 
-#include <iostream>
-#include <vector>
+
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -51,7 +50,7 @@ public:
 
     bool bfskarp(const string& source, const string& target);
 
-    int maxFlow(const string &source, const string &destination);
+    void maxFlow(const string &source, const string &destination);
 
 
 

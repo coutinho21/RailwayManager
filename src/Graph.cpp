@@ -1,4 +1,3 @@
-
 #include "Graph.h"
 
 void Graph::readFiles(const string &file1, const string &file2) {
@@ -153,10 +152,25 @@ void Graph::dijkstra(const string &source, const string &destination) {
     unordered_map<string, Station*> unvisited;
     unordered_map<string, Station*> previous;
     unordered_map<string, int> distance;
+    int sf = 1;
+    int df = 1;
+
 
     for(auto &station: stations){
         distance[station.first] = INT_MAX;
         unvisited[station.first] = station.second;
+
+        if(station.first == source) sf = 0;
+        if(station.first == destination) df = 0;
+    }
+
+    if(sf){
+        cout << "Invalid Source Station Name.\n";
+        return;
+    }
+    if(df){
+        cout << "Invalid Destination Station Name.\n";
+        return;
     }
 
     distance[source] = 0;
@@ -198,9 +212,9 @@ void Graph::dijkstra(const string &source, const string &destination) {
         return;
     }
 
-    cout << "\nShortest path from " << source << " to " << destination << " is:" << endl;
+    cout << "\nShortest path from " << source << " to " << destination << " is:" << endl << "\n";
     for(int i = path.size() - 1; i >= 0; i--){
-        cout << '\t' << path[i];
+        cout << path[i];
         cout << (i == 0 ? "" : " -> ");
     }
     cout << endl;
@@ -257,11 +271,25 @@ bool Graph::bfskarp(const string& source, const string& destination){
 }
 
 
-int Graph::maxFlow(const string &source, const string &destination){
+void Graph::maxFlow(const string &source, const string &destination){
+    int sf = 1;
+    int df = 1;
+
     for(auto station : stations){
         for(auto trip : station.second->getTrips()){
             trip->setFlow(0);
         }
+        if(station.first == source) sf = 0;
+        if(station.first == destination) df = 0;
+    }
+    if(sf || df){
+        if(sf){
+            cout << "Invalid Source Station Name.\n";
+        }
+        if(df){
+            cout << "Invalid Destination Station Name.\n";
+        }
+        return;
     }
     int total_flow = 0;
     while(bfskarp(source, destination)){
@@ -286,7 +314,14 @@ int Graph::maxFlow(const string &source, const string &destination){
         }
         total_flow += mrc;
     }
-    return total_flow;
+
+    if(!total_flow){
+        cout << "\nThere is no path from " << source << " to " << destination << endl << ".\n";
+    }
+    else {
+        cout << "It is possible for " << total_flow << " trains to travel simultaneously between " << source << " and "
+             << destination << ".\n";
+    }
 }
 
 
