@@ -164,13 +164,12 @@ void Graph::dijkstra(const string &source, const string &destination) {
         if(station.first == destination) df = 0;
     }
 
-    if(sf || df){
-        if(sf){
-            cout << "Invalid Source Station Name.\n";
-        }
-        if(df){
-            cout << "Invalid Destination Station Name.\n";
-        }
+    if(sf){
+        cout << "Invalid Source Station Name.\n";
+        return;
+    }
+    if(df){
+        cout << "Invalid Destination Station Name.\n";
         return;
     }
 
