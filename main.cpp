@@ -1,7 +1,7 @@
 #include "src/AuxMain.h"
 
-Graph railway;
 
+Graph railway;
 
 int main() {
     railway.readFiles("../data/stations.csv", "../data/network.csv");

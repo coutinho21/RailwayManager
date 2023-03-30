@@ -1,5 +1,6 @@
 #include "StationTrip.h"
 
+
 const string &Station::getName() const {
     return name;
 }
@@ -148,7 +149,3 @@ Trip *Trip::getReverse() const {
 void Trip::setReverse(Trip *reverse) {
     Trip::reverse = reverse;
 }
-
-
-
-

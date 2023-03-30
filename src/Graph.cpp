@@ -1,5 +1,6 @@
 #include "Graph.h"
 
+
 void Graph::readFiles(const string &file1, const string &file2) {
     ifstream stationsFile, linesFile;
     string line;
@@ -7,15 +8,15 @@ void Graph::readFiles(const string &file1, const string &file2) {
     stationsFile.open(file1);
     linesFile.open(file2);
 
-    std::getline(stationsFile, line, '\n'); //step var names ahead
-    std::getline(linesFile, line, '\n');  //step var names ahead
+    getline(stationsFile, line, '\n'); //step var names ahead
+    getline(linesFile, line, '\n');  //step var names ahead
 
     if (stationsFile.is_open()) {
-        while (std::getline(stationsFile, line, '\n')) {
+        while (getline(stationsFile, line, '\n')) {
             istringstream iss(line);
             vector<string> temp;
             string tempstr;
-            while ((std::getline(iss, tempstr, ','))) {
+            while ((getline(iss, tempstr, ','))) {
                 if (!tempstr.empty() && tempstr[tempstr.size() - 1] == '\r')
                     tempstr.erase(tempstr.size() - 1);
 
@@ -29,14 +30,13 @@ void Graph::readFiles(const string &file1, const string &file2) {
                     // If it does, continue reading from the input stream until
                     // we encounter another double quote
                     string quotedString = tempstr;
-                    while (std::getline(iss, tempstr, ',') && tempstr.back() != '\"') {
+                    while (getline(iss, tempstr, ',') && tempstr.back() != '\"')
                         quotedString += ',' + tempstr;
-                    }
+
                     quotedString += ',' + tempstr;
 
                     // Remove the double quotes from the resulting string
                     quotedString.erase(remove(quotedString.begin(), quotedString.end(), '\"'), quotedString.end());
-
                     tempstr = quotedString;
                 }
 
@@ -46,18 +46,16 @@ void Graph::readFiles(const string &file1, const string &file2) {
             this->addStation(s);
         }
 
-
         stationsFile.close();
-    } else
-        cout << "Unable to open file" << endl;
+    } else cout << "Unable to open file" << endl;
 
 
     if (linesFile.is_open()) {
-        while (std::getline(linesFile, line, '\n')) {
+        while (getline(linesFile, line, '\n')) {
             istringstream iss(line);
             vector<string> temp;
             string stringStationA, stringStationB, capacity, service, tempstr;
-            while ((std::getline(iss, tempstr, ','))) {
+            while ((getline(iss, tempstr, ','))) {
                 if (!tempstr.empty() && tempstr[tempstr.size() - 1] == '\r')
                     tempstr.erase(tempstr.size() - 1);
                 if (tempstr.size() >= 2 && tempstr[0] == '"' && tempstr[tempstr.size() - 1] == '"')
@@ -70,10 +68,9 @@ void Graph::readFiles(const string &file1, const string &file2) {
             this->addEdge(stationA, stationB, stoi(temp[2]), temp[3]);
             this->addLine(stationA->getLine(), stationA);
         }
-        linesFile.close();
-    } else
-        cout << "Unable to open file" << endl;
 
+        linesFile.close();
+    } else cout << "Unable to open file" << endl;
 }
 
 void Graph::addStation(Station *pStation) {
@@ -213,10 +210,8 @@ void Graph::dijkstra(const string &source, const string &destination) {
     }
 
     cout << "\nShortest path from " << source << " to " << destination << " is:" << endl << "\n";
-    for(int i = path.size() - 1; i >= 0; i--){
-        cout << path[i];
-        cout << (i == 0 ? "" : " -> ");
-    }
+    for(int i = path.size() - 1; i >= 0; i--)
+        cout << path[i] << (i == 0 ? "" : " -> ");
     cout << endl;
 }
 
@@ -275,22 +270,23 @@ void Graph::maxFlow(const string &source, const string &destination){
     int sf = 1;
     int df = 1;
 
-    for(auto station : stations){
-        for(auto trip : station.second->getTrips()){
+    for(const auto& station : stations){
+        for(auto trip : station.second->getTrips())
             trip->setFlow(0);
-        }
+
         if(station.first == source) sf = 0;
         if(station.first == destination) df = 0;
     }
-    if(sf || df){
-        if(sf){
-            cout << "Invalid Source Station Name.\n";
-        }
-        if(df){
-            cout << "Invalid Destination Station Name.\n";
-        }
+
+    if(sf){
+        cout << "Invalid Source Station Name.\n";
         return;
     }
+    if(df){
+        cout << "Invalid Destination Station Name.\n";
+        return;
+    }
+
     int total_flow = 0;
     while(bfskarp(source, destination)){
         int mrc = INT32_MAX;
@@ -303,26 +299,20 @@ void Graph::maxFlow(const string &source, const string &destination){
         }
         e = findStation(destination)->getPath();
         while(true){
-            if(e->getReverse() != nullptr){
+            if(e->getReverse() != nullptr)
                 e->getReverse()->setFlow(e->getReverse()->getFlow() - mrc);
-            }
-            else{
+            else
                 e->setFlow(e->getFlow() + mrc);
-            }
+
             if(e->getSource()->getName() == source) break;
             e = e->getSource()->getPath();
         }
         total_flow += mrc;
     }
 
-    if(!total_flow){
+    if(!total_flow)
         cout << "\nThere is no path from " << source << " to " << destination << endl << ".\n";
-    }
-    else {
+    else
         cout << "It is possible for " << total_flow << " trains to travel simultaneously between " << source << " and "
              << destination << ".\n";
-    }
 }
-
-
-

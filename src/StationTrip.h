@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 class Trip;
 
 // Station class represents the nodes of the graph
@@ -61,8 +62,7 @@ private:
     vector<Trip *> trips; // edges of the graph
     bool visited = false;
     Trip *path = nullptr;
-
-    std::vector<Trip *> incoming;
+    vector<Trip *> incoming;
 
 };
 
@@ -105,7 +105,7 @@ private:
     int flow = 0;
     string service;
     Trip *reverse = nullptr;
-
 };
+
 
 #endif

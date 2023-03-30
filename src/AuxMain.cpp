@@ -12,7 +12,7 @@ void showMenu() {
     cout << "\nChoose an option: ";
 }
 
-void showListStationAttributes(const Graph& railway){
+void showListStationAttributes() {
     cout << "\n0) Go back\n";
     cout << "1) Show all stations\n";
     cout << "2) Show all connections\n";
@@ -25,7 +25,7 @@ void listStationAttributes(Graph railway){
     int option;
     string stationName, stationName2;
     do {
-        showListStationAttributes(railway);
+        showListStationAttributes();
         option = readOption();
         switch (option) {
             case 0:
@@ -52,9 +52,6 @@ void listStationAttributes(Graph railway){
     } while (option != 0);
 }
 
-
-
-
 int readOption() {
     int option;
 
@@ -69,7 +66,6 @@ int readOption() {
 string readInput(){
     string input;
     getline(cin >> ws, input);
-    cout << std::endl;
+    cout << endl;
     return input;
 }
-

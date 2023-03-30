@@ -1,7 +1,6 @@
 #ifndef RAILWAYMANAGER_GRAPH_H
 #define RAILWAYMANAGER_GRAPH_H
 
-
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -52,17 +51,10 @@ public:
 
     void maxFlow(const string &source, const string &destination);
 
-
-
-
 private:
     unordered_map<string, Station *> stations; // nodes of the graph
     unordered_map<string, vector<Station *>> lines; // lines of the trains
-
     int size{};
-
-
-
 };
 
 
