@@ -7,6 +7,8 @@ int main() {
     railway.readFiles("../data/stations.csv", "../data/network.csv");
     int option;
     string stationName, stationName2;
+    welcome();
+    instructions();
     do {
         showMenu();
         option = readOption();

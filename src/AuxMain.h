@@ -16,5 +16,8 @@ string readInput();
 
 void listStationAttributes(Graph railway);
 
+void welcome();
+
+void instructions();
 
 #endif
