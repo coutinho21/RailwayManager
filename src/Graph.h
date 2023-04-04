@@ -49,7 +49,9 @@ public:
 
     bool bfskarp(const string& source, const string& target);
 
-    void maxFlow(const string &source, const string &destination);
+    int maxFlow(const string &source, const string &destination);
+
+    void MaxMaxFlow();
 
 private:
     unordered_map<string, Station *> stations; // nodes of the graph

@@ -266,7 +266,7 @@ bool Graph::bfskarp(const string& source, const string& destination){
 }
 
 
-void Graph::maxFlow(const string &source, const string &destination){
+int Graph::maxFlow(const string &source, const string &destination){
     int sf = 1;
     int df = 1;
 
@@ -280,11 +280,12 @@ void Graph::maxFlow(const string &source, const string &destination){
 
     if(sf){
         cout << "Invalid Source Station Name.\n";
-        return;
+        cout << source << endl;
+        return 0;
     }
     if(df){
         cout << "Invalid Destination Station Name.\n";
-        return;
+        return 0;
     }
 
     int total_flow = 0;
@@ -309,10 +310,37 @@ void Graph::maxFlow(const string &source, const string &destination){
         }
         total_flow += mrc;
     }
-
-    if(!total_flow)
-        cout << "\nThere is no path from " << source << " to " << destination << endl << ".\n";
-    else
-        cout << "It is possible for " << total_flow << " trains to travel simultaneously between " << source << " and "
-             << destination << ".\n";
+    return total_flow;
 }
+
+void Graph::MaxMaxFlow() {
+    int res = 0;
+    int temp = 0;
+    unordered_map<string, int> st_temp;
+    for(auto station : stations){
+        for(auto station2 : stations){
+            if(station.first == station2.first)
+                continue;
+            temp = maxFlow(station.first, station2.first);
+            if(temp > res){
+                res = temp;
+                st_temp.clear();
+                st_temp[station.first]+=1;
+                st_temp[station2.first]+=1;
+            }
+            else if(temp == res){
+                if(st_temp.empty() || st_temp.find(station.first) == st_temp.end() || st_temp.find(station2.first) == st_temp.end()){
+                    st_temp[station.first]+=1;
+                    st_temp[station2.first]+=1;
+                }
+            }
+        }
+    }
+
+    cout << "The stations that require the most amount of trains (" << res << " trains) are: " << endl;
+    for(auto st : st_temp){
+        cout << st.first << endl;
+
+    }
+}
+

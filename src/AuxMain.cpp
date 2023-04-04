@@ -4,9 +4,9 @@
 void showMenu() {
     cout << "\n0) Exit\n";
     cout << "1) List station attributes\n";
-    cout << "2) Shortest path between two stations\n";
-    cout << "3) Maximum simultaneously travelling trains between two stations\n"; //2.1
-    cout << "4) Pairs of stations that require most amount of trains\n"; //2.2
+    cout << "2) Shortest path between two stations\n";  //Dijkstra
+    cout << "3) Maximum simultaneously travelling trains between two stations\n"; //2.1 Max Flow
+    cout << "4) Pairs of stations that require most amount of trains\n"; //2.2 Max Max-flow between all pairs of stations
     cout << "5) Top-k municipalities and districts, regarding transportation needs\n";  //2.3
     cout << "6) Maximum simultaneously arriving trains at a station\n"; //2.4
     cout << "\nChoose an option: ";
