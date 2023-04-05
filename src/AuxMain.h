@@ -3,7 +3,6 @@
 
 #include "Graph.h"
 
-
 using namespace std;
 
 
@@ -16,9 +15,5 @@ int readOption();
 string readInput();
 
 void listStationAttributes(Graph railway);
-
-void welcome();
-
-void instructions();
 
 #endif
