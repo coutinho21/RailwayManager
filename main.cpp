@@ -1,17 +1,13 @@
 #include "src/AuxMain.h"
-#include <locale>
-
 
 Graph railway;
 
 int main() {
-    setlocale(LC_ALL, "pt_PT.UTF-8");
     railway.readFiles("../data/stations.csv", "../data/network.csv");
     int option;
     int total_flow;
     string stationName, stationName2;
-    //welcome();
-    //instructions();
+
     do {
         showMenu();
         option = readOption();

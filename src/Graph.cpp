@@ -317,8 +317,10 @@ void Graph::MaxMaxFlow() {
     int res = 0;
     int temp = 0;
     unordered_map<string, int> st_temp;
+    unordered_map<string, Station *> auxStations = stations;
     for(auto station : stations){
-        for(auto station2 : stations){
+        auxStations.erase(station.first);
+        for(auto station2 : auxStations){
             if(station.first == station2.first)
                 continue;
             temp = maxFlow(station.first, station2.first);
