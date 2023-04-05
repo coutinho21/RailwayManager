@@ -31,11 +31,10 @@ int main() {
                 cout << "To (Station name): ";
                 stationName2 = readInput();
                 total_flow = railway.maxFlow(stationName, stationName2);
-                if(total_flow == 0){
+                if(!total_flow)
                     cout << "It is not possible to travel between " << stationName << " and " << stationName2 << ".\n";
-                }else{
+                else
                     cout << "It is possible for " << total_flow << " trains to travel simultaneously between " << stationName << " and " << stationName2 << ".\n";
-                }
                 break;
             case 4:
                 railway.MaxMaxFlow();
