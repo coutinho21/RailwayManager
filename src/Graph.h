@@ -51,7 +51,11 @@ public:
 
     int maxFlow(const string &source, const string &destination);
 
-    void MaxMaxFlow();
+    void maxMaxFlow();
+
+    void maxFlowDistrict(int k, string district);
+
+    void maxFlowMunicipality(int k, string municipality);
 
 private:
     unordered_map<string, Station *> stations; // nodes of the graph

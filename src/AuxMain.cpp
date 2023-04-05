@@ -7,9 +7,9 @@ void showMenu() {
     cout << "2) Shortest path between two stations\n";  //Dijkstra
     cout << "3) Maximum simultaneously travelling trains between two stations\n"; //2.1 Max Flow
     cout << "4) Pairs of stations that require most amount of trains\n"; //2.2 Max Max-flow between all pairs of stations
-    cout << "5) Top-k municipalities and districts, regarding transportation needs\n";  //2.3
+    cout << "5) Top-k municipalities or districts, regarding transportation needs\n";  //2.3 List of k districts or municipalities according to their max flow
     cout << "6) Maximum simultaneously arriving trains at a station\n"; //2.4
-    cout << "\nChoose an option: \n";
+    cout << "\nChoose an option: ";
 }
 
 void showListStationAttributes() {
@@ -18,7 +18,7 @@ void showListStationAttributes() {
     cout << "2) Show all connections\n";
     cout << "3) Show all connections from a station\n";
     cout << "4) Show all connections to a station\n";
-    cout << "\nChoose an option: \n";
+    cout << "\nChoose an option: ";
 }
 
 void listStationAttributes(Graph railway){

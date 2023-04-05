@@ -313,7 +313,7 @@ int Graph::maxFlow(const string &source, const string &destination){
     return total_flow;
 }
 
-void Graph::MaxMaxFlow() {
+void Graph::maxMaxFlow() {
     int res = 0;
     int temp = 0;
     unordered_map<string, int> st_temp;
@@ -344,5 +344,49 @@ void Graph::MaxMaxFlow() {
         cout << st.first << endl;
 
     }
+}
+
+void Graph::maxFlowDistrict(int k, string district) {
+    int res = 0;
+    int temp = 0;
+    unordered_map<string, int> st_temp;
+    unordered_map<string, Station *> stationsOfDistrict = stations;
+
+    for(auto station : stations){
+        if(station.second->getDistrict() != district)
+            stationsOfDistrict.erase(station.first);
+    }
+    unordered_map<string, Station *> auxStations = stationsOfDistrict;
+
+    for(auto station : stationsOfDistrict){
+        auxStations.erase(station.first);
+        for(auto station2 : auxStations){
+            if(station.first == station2.first)
+                continue;
+            temp = maxFlow(station.first, station2.first);
+            if(temp > res){
+                res = temp;
+                st_temp.clear();
+                st_temp[station.first]+=1;
+                st_temp[station2.first]+=1;
+            }
+            else if(temp == res){
+                if(st_temp.empty() || st_temp.find(station.first) == st_temp.end() || st_temp.find(station2.first) == st_temp.end()){
+                    st_temp[station.first]+=1;
+                    st_temp[station2.first]+=1;
+                }
+            }
+        }
+    }
+
+    cout << "The stations that require the most amount of trains (" << res << " trains) are: " << endl;
+    for(auto st : st_temp){
+        cout << st.first << endl;
+
+    }
+}
+
+void Graph::maxFlowMunicipality(int k, string municipality) {
+
 }
 
