@@ -53,7 +53,7 @@ public:
 
     void maxMaxFlow();
 
-    void maxFlowDistrict(int k, string district);
+    void maxFlowDistrict(int k, const string& district);
 
     void maxFlowMunicipality(int k, string municipality);
 

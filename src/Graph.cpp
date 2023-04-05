@@ -318,9 +318,9 @@ void Graph::maxMaxFlow() {
     int temp = 0;
     unordered_map<string, int> st_temp;
     unordered_map<string, Station *> auxStations = stations;
-    for(auto station : stations){
+    for(const auto& station : stations){
         auxStations.erase(station.first);
-        for(auto station2 : auxStations){
+        for(const auto& station2 : auxStations){
             if(station.first == station2.first)
                 continue;
             temp = maxFlow(station.first, station2.first);
@@ -340,29 +340,27 @@ void Graph::maxMaxFlow() {
     }
 
     cout << "The stations that require the most amount of trains (" << res << " trains) are: " << endl;
-    for(auto st : st_temp){
-        cout << st.first << endl;
+    for(const auto& st : st_temp){
+        cout << "- "<< st.first << endl;
 
     }
 }
 
-void Graph::maxFlowDistrict(int k, string district) {
+void Graph::maxFlowDistrict(int k, const string& district) {
     int res = 0;
     int temp = 0;
     unordered_map<string, int> st_temp;
     unordered_map<string, Station *> stationsOfDistrict = stations;
 
-    for(auto station : stations){
+    for(const auto& station : stations){
         if(station.second->getDistrict() != district)
             stationsOfDistrict.erase(station.first);
     }
     unordered_map<string, Station *> auxStations = stationsOfDistrict;
 
-    for(auto station : stationsOfDistrict){
+    for(const auto& station : stationsOfDistrict){
         auxStations.erase(station.first);
-        for(auto station2 : auxStations){
-            if(station.first == station2.first)
-                continue;
+        for(const auto& station2 : auxStations){
             temp = maxFlow(station.first, station2.first);
             if(temp > res){
                 res = temp;
@@ -381,7 +379,7 @@ void Graph::maxFlowDistrict(int k, string district) {
 
     cout << "The stations that require the most amount of trains (" << res << " trains) are: " << endl;
     for(auto st : st_temp){
-        cout << st.first << endl;
+        cout << "- " << st.first << endl;
 
     }
 }
