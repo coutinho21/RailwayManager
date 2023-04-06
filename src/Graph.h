@@ -39,6 +39,8 @@ public:
 
     void addEdge(Station *source, Station *destination, int capacity, const string &service);
 
+    void removeEdge(Station *source, Station *destination);
+
     void addLine(const string &basicString, Station *pStation);
 
     void printConnectionsTo(const string& stationName);

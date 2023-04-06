@@ -39,6 +39,8 @@ public:
 
     void addTrip(Station *destination, int capacity, const string &service);
 
+    void removeTrip(Station *destination);
+
     const vector<Trip *> &getTrips() const;
 
     void setTrips(const vector<Trip *> &trips);
@@ -64,6 +66,7 @@ private:
     bool visited = false;
     Trip *path = nullptr;
     vector<Trip *> incoming;
+
 
 };
 

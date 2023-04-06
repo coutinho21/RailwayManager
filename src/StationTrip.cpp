@@ -158,4 +158,13 @@ void Trip::setReverse(Trip *reverse) {
     Trip::reverse = reverse;
 }
 
+void Station::removeTrip(Station *destination) {
+    for (int i = 0; i < trips.size(); i++) {
+        if (trips[i]->getDestination() == destination) {
+            trips.erase(trips.begin() + i);
+            break;
+        }
+    }
+}
+
 

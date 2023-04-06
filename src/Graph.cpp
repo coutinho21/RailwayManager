@@ -92,6 +92,11 @@ void Graph::addEdge(Station *source, Station *destination, int capacity, const s
     destination->addTrip(source, capacity, service);
 }
 
+void Graph::removeEdge(Station *source, Station *destination) {
+    source->removeTrip(destination);
+    destination->removeTrip(source);
+}
+
 void Graph::addLine(const string &basicString, Station *pStation) {
     lines[basicString].push_back(pStation);
 }
@@ -428,7 +433,6 @@ int Graph::maxTrainsArrival(const string &station) {
 
     // find maximum flow from super source to super sink
     int max_flow = maxFlow(super_source, station);
-    cout << "Maximum flow: " << max_flow << endl;
 
     // find the flow arriving at the given station
     int station_flow = 0;
@@ -438,23 +442,16 @@ int Graph::maxTrainsArrival(const string &station) {
         }
     }
 
-    cout << "Station flow: " << station_flow << endl;
 
     for(auto &s: stations) {
-        if (s.first != station && stations[s.first]->getTrips().size() == 1) {
-            for(auto t : s.second->getTrips()){
-                if(t->getDestination()->getName() == super_source){
-                    delete t;
-                }
-            }
-        }
+        removeEdge(super_source_station,s.second);
     }
-
-    stations.erase(super_source);
 
     // return the maximum number of trains that can simultaneously arrive at the given station
     return min(station_flow, max_flow);
 }
+
+
 
 
 
