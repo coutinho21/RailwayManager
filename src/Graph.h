@@ -53,14 +53,18 @@ public:
 
     void maxMaxFlow();
 
-    void maxFlowDistrict(int k, const string& district);
+    void maxFlowDistrict(int k);
 
-    void maxFlowMunicipality(int k, string municipality);
+    void maxFlowMunicipality(int k);
+
+    int maxTrainsArrival(vector<vector<int>> &maxflow, int s);
 
 private:
     unordered_map<string, Station *> stations; // nodes of the graph
     unordered_map<string, vector<Station *>> lines; // lines of the trains
     int size{};
+
+
 };
 
 

@@ -6,7 +6,7 @@ int main() {
     railway.readFiles("../data/stations.csv", "../data/network.csv");
     int option, option2;
     int k,total_flow;
-    string stationName, stationName2,district, municipality;
+    string stationName, stationName2;
     do {
         showMenu();
         option = readOption();
@@ -45,18 +45,20 @@ int main() {
                 cout << "\nChoose an option: ";
                 option2 = readOption();
                 if(option2 == 1) {
-                    cout << "\nDistrict name: ";
-                    district = readInput();
-                    railway.maxFlowDistrict(k, district);
+                    cout << "Top k districts: ";
+                    k = readOption();
+                    railway.maxFlowDistrict(k);
                 }
                 else if(option2 == 2){
-                    cout << "\nMunicipality name: ";
-                    municipality = readInput();
-                    railway.maxFlowMunicipality(k, municipality);
+                    cout << "Top k districts: ";
+                    k = readOption();
+                    railway.maxFlowMunicipality(k);
                 }
                 else
                     cout << "\nInvalid option. Try again.\n";
                 break;
+            case 6:
+
             default:
                 cout << "\nInvalid option. Try again.\n";
         }

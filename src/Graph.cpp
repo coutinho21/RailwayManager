@@ -346,45 +346,69 @@ void Graph::maxMaxFlow() {
     }
 }
 
-void Graph::maxFlowDistrict(int k, const string& district) {
-    int res = 0;
-    int temp = 0;
-    unordered_map<string, int> st_temp;
-    unordered_map<string, Station *> stationsOfDistrict = stations;
-
-    for(const auto& station : stations){
-        if(station.second->getDistrict() != district)
-            stationsOfDistrict.erase(station.first);
-    }
-    unordered_map<string, Station *> auxStations = stationsOfDistrict;
-
-    for(const auto& station : stationsOfDistrict){
+void Graph::maxFlowDistrict(int k) {
+    int ktemp = k;
+    unordered_map<string, int> d_temp;
+    unordered_map<string, Station *> auxStations = stations;
+    for (const auto &station: stations) {
         auxStations.erase(station.first);
-        for(const auto& station2 : auxStations){
-            temp = maxFlow(station.first, station2.first);
-            if(temp > res){
-                res = temp;
-                st_temp.clear();
-                st_temp[station.first]+=1;
-                st_temp[station2.first]+=1;
-            }
-            else if(temp == res){
-                if(st_temp.empty() || st_temp.find(station.first) == st_temp.end() || st_temp.find(station2.first) == st_temp.end()){
-                    st_temp[station.first]+=1;
-                    st_temp[station2.first]+=1;
-                }
-            }
+        for (const auto &station2: auxStations) {
+            if (station.first == station2.first)
+                continue;
+            if (station.second->getDistrict() != station2.second->getDistrict()) {
+            continue;
+        }
+            d_temp[station.second->getDistrict()] += maxFlow(station.first, station2.first);
         }
     }
-
-    cout << "The stations that require the most amount of trains (" << res << " trains) are: " << endl;
-    for(auto st : st_temp){
-        cout << "- " << st.first << endl;
-
+    while(k > 0) {              //ordenar distritos ordem decrescente de maxflow
+        int max = 0;
+        string maxD;
+        for (const auto &d: d_temp) {
+            if (d.second > max) {
+                max = d.second;
+                maxD = d.first;
+            }
+        }
+        cout << ktemp - k + 1 <<"º " << maxD << " ideally requires " << max << " trains." << endl;
+        d_temp.erase(maxD);
+        k--;
     }
 }
 
-void Graph::maxFlowMunicipality(int k, string municipality) {
+void Graph::maxFlowMunicipality(int k) {
+    int ktemp = k;
+    unordered_map<string, int> d_temp;
+    unordered_map<string, Station *> auxStations = stations;
+    for (const auto &station: stations) {
+        auxStations.erase(station.first);
+        for (const auto &station2: auxStations) {
+            if (station.first == station2.first)
+                continue;
+            if (station.second->getMunicipality() != station2.second->getMunicipality()) {
+                continue;
+            }
+            d_temp[station.second->getMunicipality()] += maxFlow(station.first, station2.first);
+        }
+    }
+    while(k > 0) {              //ordenar municipios ordem decrescente de maxflow
+        int max = 0;
+        string maxD;
+        for (const auto &d: d_temp) {
+            if (d.second > max) {
+                max = d.second;
+                maxD = d.first;
+            }
+        }
+        cout << ktemp - k + 1 <<"º " << maxD << " ideally requires " << max << " trains." << endl;
+        d_temp.erase(maxD);
+        k--;
+    }
+}
+
+int Graph::maxTrainsArrival(vector<vector<int>>& maxflow, int s) {
 
 }
+
+
 
