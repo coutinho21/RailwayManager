@@ -57,7 +57,7 @@ public:
 
     void maxFlowMunicipality(int k);
 
-    int maxTrainsArrival(vector<vector<int>> &maxflow, int s);
+    int maxTrainsArrival(const string& station);
 
 private:
     unordered_map<string, Station *> stations; // nodes of the graph

@@ -1,3 +1,4 @@
+#include <map>
 #include "src/AuxMain.h"
 
 Graph railway;
@@ -6,7 +7,7 @@ int main() {
     railway.readFiles("../data/stations.csv", "../data/network.csv");
     int option, option2;
     int k,total_flow;
-    string stationName, stationName2;
+    string station,stationName, stationName2;
     do {
         showMenu();
         option = readOption();
@@ -58,7 +59,10 @@ int main() {
                     cout << "\nInvalid option. Try again.\n";
                 break;
             case 6:
-
+                cout << "\nStation name: ";
+                station = readInput();
+                cout << railway.maxTrainsArrival(station) << " trains can arrive at " << stationName << " simultaneously.\n";
+                break;
             default:
                 cout << "\nInvalid option. Try again.\n";
         }

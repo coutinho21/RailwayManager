@@ -1,9 +1,11 @@
+#include <map>
 #include "Graph.h"
 
 
 void Graph::readFiles(const string &file1, const string &file2) {
     ifstream stationsFile, linesFile;
     string line;
+    int counter = 1;
 
     stationsFile.open(file1);
     linesFile.open(file2);
@@ -22,7 +24,7 @@ void Graph::readFiles(const string &file1, const string &file2) {
 
                 // Check if the current value starts with a double quote
                 if (tempstr.front() == '\"') {
-                    if(tempstr.back() == '\"') {
+                    if (tempstr.back() == '\"') {
                         tempstr.erase(remove(tempstr.begin(), tempstr.end(), '\"'), tempstr.end());
                         temp.push_back(tempstr);
                         continue;
@@ -42,7 +44,8 @@ void Graph::readFiles(const string &file1, const string &file2) {
 
                 temp.push_back(tempstr);
             }
-            auto *s = new Station(temp[0], temp[1], temp[2], temp[3], temp[4]);
+            counter++;
+            auto *s = new Station(counter, temp[0], temp[1], temp[2], temp[3], temp[4]);
             this->addStation(s);
         }
 
@@ -74,7 +77,7 @@ void Graph::readFiles(const string &file1, const string &file2) {
 }
 
 void Graph::addStation(Station *pStation) {
-    if( stations.find(pStation->getName()) == stations.end()) {
+    if (stations.find(pStation->getName()) == stations.end()) {
         stations[pStation->getName()] = pStation;
         size++;
     }
@@ -85,15 +88,15 @@ Station *Graph::getStation(const string &basicString) {
 }
 
 void Graph::addEdge(Station *source, Station *destination, int capacity, const string &service) {
-    source->addEdge(destination, capacity, service);
-    destination->addEdge(source, capacity, service);
+    source->addTrip(destination, capacity, service);
+    destination->addTrip(source, capacity, service);
 }
 
 void Graph::addLine(const string &basicString, Station *pStation) {
     lines[basicString].push_back(pStation);
 }
 
-unordered_map<string, Station *> &Graph::getStations(){
+unordered_map<string, Station *> &Graph::getStations() {
     return stations;
 }
 
@@ -101,7 +104,7 @@ void Graph::setStations(const unordered_map<string, Station *> &stations) {
     Graph::stations = stations;
 }
 
-unordered_map<string, vector<Station *>> &Graph::getLines(){
+unordered_map<string, vector<Station *>> &Graph::getLines() {
     return lines;
 }
 
@@ -121,10 +124,10 @@ void Graph::printStations() {
     cout << "\nAll stations:" << endl;
     for (auto &station: this->stations)
         cout << "\tStation name -> " << station.second->getName() << endl
-        << "\tStation district -> " << station.second->getDistrict() << endl
-        << "\tStation municipality -> " << station.second->getMunicipality() << endl
-        << "\tStation township -> " << station.second->getTownship() << endl
-        << "\tStation line -> " << station.second->getLine() << endl << "\n\n";
+             << "\tStation district -> " << station.second->getDistrict() << endl
+             << "\tStation municipality -> " << station.second->getMunicipality() << endl
+             << "\tStation township -> " << station.second->getTownship() << endl
+             << "\tStation line -> " << station.second->getLine() << endl << "\n\n";
 }
 
 void Graph::printAllConnections() {
@@ -133,11 +136,11 @@ void Graph::printAllConnections() {
         station.second->printConnections();
 }
 
-void Graph::printConnectionsTo(const string& stationName) {
+void Graph::printConnectionsTo(const string &stationName) {
     cout << "\nConnections to " << stationName << ':' << endl;
-    for(auto &station: this->stations){
-        for(auto &connection: station.second->getTrips()){
-            if(connection->getDestination()->getName() == stationName)
+    for (auto &station: this->stations) {
+        for (auto &connection: station.second->getTrips()) {
+            if (connection->getDestination()->getName() == stationName)
                 cout << '\t' << station.second->getName() << " -> " << connection->getDestination()->getName() << endl;
         }
     }
@@ -145,51 +148,51 @@ void Graph::printConnectionsTo(const string& stationName) {
 }
 
 void Graph::dijkstra(const string &source, const string &destination) {
-    unordered_map<string, Station*> visited;
-    unordered_map<string, Station*> unvisited;
-    unordered_map<string, Station*> previous;
+    unordered_map<string, Station *> visited;
+    unordered_map<string, Station *> unvisited;
+    unordered_map<string, Station *> previous;
     unordered_map<string, int> distance;
     int sf = 1;
     int df = 1;
 
 
-    for(auto &station: stations){
+    for (auto &station: stations) {
         distance[station.first] = INT_MAX;
         unvisited[station.first] = station.second;
 
-        if(station.first == source) sf = 0;
-        if(station.first == destination) df = 0;
+        if (station.first == source) sf = 0;
+        if (station.first == destination) df = 0;
     }
 
-    if(sf){
+    if (sf) {
         cout << "Invalid Source Station Name.\n";
         return;
     }
-    if(df){
+    if (df) {
         cout << "Invalid Destination Station Name.\n";
         return;
     }
 
     distance[source] = 0;
 
-    while(!unvisited.empty()){
-        Station* current = unvisited.begin()->second;
-        for(auto &station: unvisited){
-            if(distance[station.first] < distance[current->getName()])
+    while (!unvisited.empty()) {
+        Station *current = unvisited.begin()->second;
+        for (auto &station: unvisited) {
+            if (distance[station.first] < distance[current->getName()])
                 current = station.second;
         }
 
-        if(current->getName() == destination)
+        if (current->getName() == destination)
             break;
 
 
         unvisited.erase(current->getName());
         visited[current->getName()] = current;
 
-        for(auto &connection: current->getTrips()){
-            if(visited.find(connection->getDestination()->getName()) == visited.end()){
+        for (auto &connection: current->getTrips()) {
+            if (visited.find(connection->getDestination()->getName()) == visited.end()) {
                 int alt = distance[current->getName()] + 1;
-                if(alt < distance[connection->getDestination()->getName()]){
+                if (alt < distance[connection->getDestination()->getName()]) {
                     distance[connection->getDestination()->getName()] = alt;
                     previous[connection->getDestination()->getName()] = current;
                 }
@@ -198,26 +201,26 @@ void Graph::dijkstra(const string &source, const string &destination) {
     }
 
     vector<string> path;
-    Station* current = stations[destination];
-    while(current != nullptr){
+    Station *current = stations[destination];
+    while (current != nullptr) {
         path.push_back(current->getName());
         current = previous[current->getName()];
     }
 
-    if(path[path.size()-1] != source){
+    if (path[path.size() - 1] != source) {
         cout << "\nThere is no path from " << source << " to " << destination << endl;
         return;
     }
 
     cout << "\nShortest path from " << source << " to " << destination << " is:" << endl << "\n";
-    for(int i = path.size() - 1; i >= 0; i--)
+    for (int i = path.size() - 1; i >= 0; i--)
         cout << path[i] << (i == 0 ? "" : " -> ");
     cout << endl;
 }
 
-Station *Graph::findStation(const string& source) {
-    for(const auto& station : stations){
-        if(station.first == source){
+Station *Graph::findStation(const string &source) {
+    for (const auto &station: stations) {
+        if (station.first == source) {
             return station.second;
         }
     }
@@ -225,34 +228,34 @@ Station *Graph::findStation(const string& source) {
 }
 
 
-bool Graph::bfskarp(const string& source, const string& destination){
+bool Graph::bfskarp(const string &source, const string &destination) {
     std::queue<Station *> q;
-    for(auto station : stations){
+    for (auto station: stations) {
         station.second->setVisited(false);
         station.second->setPath(nullptr);
-        for(auto e : station.second->getTrips()){
+        for (auto e: station.second->getTrips()) {
             delete e->getReverse();
             e->setReverse(nullptr);
         }
     }
     q.push(findStation(source));
     q.front()->setVisited(true);
-    while(!q.empty()){
+    while (!q.empty()) {
         auto v = q.front();
         q.pop();
-        for(auto e : v->getTrips()){
+        for (auto e: v->getTrips()) {
             auto w = e->getDestination();
-            if(!w->isVisited() && e->getCapacity() - e->getFlow() > 0){
+            if (!w->isVisited() && e->getCapacity() - e->getFlow() > 0) {
                 w->setPath(e);
                 w->setVisited(true);
                 q.push(w);
-                if(w->getName() == destination) return true;
+                if (w->getName() == destination) return true;
             }
         }
-        for(auto e : v->getIncoming()){
+        for (auto e: v->getIncoming()) {
             auto w = e->getSource();
-            if(!w->isVisited() && e->getFlow() != 0){
-                Trip* er = new Trip(e->getDestination(), e->getSource(), e->getFlow(), e->getService());
+            if (!w->isVisited() && e->getFlow() != 0) {
+                Trip *er = new Trip(e->getDestination(), e->getSource(), e->getFlow(), e->getService());
                 er->setFlow(0);
                 e->setReverse(er);
                 er->setReverse(e);
@@ -266,46 +269,47 @@ bool Graph::bfskarp(const string& source, const string& destination){
 }
 
 
-int Graph::maxFlow(const string &source, const string &destination){
+int Graph::maxFlow(const string &source, const string &destination) {
     int sf = 1;
     int df = 1;
 
-    for(const auto& station : stations){
-        for(auto trip : station.second->getTrips())
+    for (const auto &station: stations) {
+        for (auto trip: station.second->getTrips())
             trip->setFlow(0);
 
-        if(station.first == source) sf = 0;
-        if(station.first == destination) df = 0;
+        if (station.first == source) sf = 0;
+        if (station.first == destination) df = 0;
     }
 
-    if(sf){
+    if (sf) {
         cout << "Invalid Source Station Name.\n";
         cout << source << endl;
         return 0;
     }
-    if(df){
+    if (df) {
         cout << "Invalid Destination Station Name.\n";
         return 0;
     }
 
     int total_flow = 0;
-    while(bfskarp(source, destination)){
+    while (bfskarp(source, destination)) {
         int mrc = INT32_MAX;
         auto e = findStation(destination)->getPath();
-        while(true){
-            if(e->getReverse()== nullptr && e->getCapacity() - e->getFlow() < mrc) mrc = e->getCapacity() - e->getFlow();
-            if(e->getReverse()!= nullptr && e->getReverse()->getFlow() < mrc) mrc = e->getReverse()->getFlow();
-            if(e->getSource()->getName() == source) break;
+        while (true) {
+            if (e->getReverse() == nullptr && e->getCapacity() - e->getFlow() < mrc)
+                mrc = e->getCapacity() - e->getFlow();
+            if (e->getReverse() != nullptr && e->getReverse()->getFlow() < mrc) mrc = e->getReverse()->getFlow();
+            if (e->getSource()->getName() == source) break;
             e = e->getSource()->getPath();
         }
         e = findStation(destination)->getPath();
-        while(true){
-            if(e->getReverse() != nullptr)
+        while (true) {
+            if (e->getReverse() != nullptr)
                 e->getReverse()->setFlow(e->getReverse()->getFlow() - mrc);
             else
                 e->setFlow(e->getFlow() + mrc);
 
-            if(e->getSource()->getName() == source) break;
+            if (e->getSource()->getName() == source) break;
             e = e->getSource()->getPath();
         }
         total_flow += mrc;
@@ -316,34 +320,37 @@ int Graph::maxFlow(const string &source, const string &destination){
 void Graph::maxMaxFlow() {
     int res = 0;
     int temp = 0;
+    vector<pair<string, string>> allMaxFlow;
     unordered_map<string, int> st_temp;
     unordered_map<string, Station *> auxStations = stations;
-    for(const auto& station : stations){
+    for (const auto &station: stations) {
         auxStations.erase(station.first);
-        for(const auto& station2 : auxStations){
-            if(station.first == station2.first)
+        for (const auto &station2: auxStations) {
+            if (station.first == station2.first)
                 continue;
             temp = maxFlow(station.first, station2.first);
-            if(temp > res){
+
+            if (temp > res) {
                 res = temp;
                 st_temp.clear();
-                st_temp[station.first]+=1;
-                st_temp[station2.first]+=1;
-            }
-            else if(temp == res){
-                if(st_temp.empty() || st_temp.find(station.first) == st_temp.end() || st_temp.find(station2.first) == st_temp.end()){
-                    st_temp[station.first]+=1;
-                    st_temp[station2.first]+=1;
+                st_temp[station.first] += 1;
+                st_temp[station2.first] += 1;
+            } else if (temp == res) {
+                if (st_temp.empty() || st_temp.find(station.first) == st_temp.end() ||
+                    st_temp.find(station2.first) == st_temp.end()) {
+                    st_temp[station.first] += 1;
+                    st_temp[station2.first] += 1;
                 }
             }
         }
     }
 
     cout << "The stations that require the most amount of trains (" << res << " trains) are: " << endl;
-    for(const auto& st : st_temp){
-        cout << "- "<< st.first << endl;
+    for (const auto &st: st_temp) {
+        cout << "- " << st.first << endl;
 
     }
+    // return allMaxFlow;
 }
 
 void Graph::maxFlowDistrict(int k) {
@@ -356,12 +363,12 @@ void Graph::maxFlowDistrict(int k) {
             if (station.first == station2.first)
                 continue;
             if (station.second->getDistrict() != station2.second->getDistrict()) {
-            continue;
-        }
+                continue;
+            }
             d_temp[station.second->getDistrict()] += maxFlow(station.first, station2.first);
         }
     }
-    while(k > 0) {              //ordenar distritos ordem decrescente de maxflow
+    while (k > 0) {              //ordenar distritos ordem decrescente de maxflow
         int max = 0;
         string maxD;
         for (const auto &d: d_temp) {
@@ -370,7 +377,7 @@ void Graph::maxFlowDistrict(int k) {
                 maxD = d.first;
             }
         }
-        cout << ktemp - k + 1 <<"º " << maxD << " ideally requires " << max << " trains." << endl;
+        cout << ktemp - k + 1 << "º " << maxD << " ideally requires " << max << " trains." << endl;
         d_temp.erase(maxD);
         k--;
     }
@@ -391,7 +398,7 @@ void Graph::maxFlowMunicipality(int k) {
             d_temp[station.second->getMunicipality()] += maxFlow(station.first, station2.first);
         }
     }
-    while(k > 0) {              //ordenar municipios ordem decrescente de maxflow
+    while (k > 0) {              //ordenar municipios ordem decrescente de maxflow
         int max = 0;
         string maxD;
         for (const auto &d: d_temp) {
@@ -400,14 +407,53 @@ void Graph::maxFlowMunicipality(int k) {
                 maxD = d.first;
             }
         }
-        cout << ktemp - k + 1 <<"º " << maxD << " ideally requires " << max << " trains." << endl;
+        cout << ktemp - k + 1 << "º " << maxD << " ideally requires " << max << " trains." << endl;
         d_temp.erase(maxD);
         k--;
     }
 }
 
-int Graph::maxTrainsArrival(vector<vector<int>>& maxflow, int s) {
+int Graph::maxTrainsArrival(const string &station) {
+    // add super source and super sink nodes
+    string super_source = "super_source";
+    auto *super_source_station = new Station(0,super_source, "sp", "sp","sp","sp");
 
+    stations[super_source] = super_source_station;
+    for (auto &s: stations) {
+        if (s.first != station && stations[s.first]->getTrips().size() == 1) {
+            addEdge(s.second,super_source_station, INT_MAX, "SP");
+        }
+    }
+
+
+    // find maximum flow from super source to super sink
+    int max_flow = maxFlow(super_source, station);
+    cout << "Maximum flow: " << max_flow << endl;
+
+    // find the flow arriving at the given station
+    int station_flow = 0;
+    for (auto &neighbor: stations[station]->getTrips()) {
+        if (neighbor->getDestination()->getName() != station) {
+            station_flow += neighbor->getCapacity();
+        }
+    }
+
+    cout << "Station flow: " << station_flow << endl;
+
+    for(auto &s: stations) {
+        if (s.first != station && stations[s.first]->getTrips().size() == 1) {
+            for(auto t : s.second->getTrips()){
+                if(t->getDestination()->getName() == super_source){
+                    delete t;
+                }
+            }
+        }
+    }
+
+    stations.erase(super_source);
+
+    // return the maximum number of trains that can simultaneously arrive at the given station
+    return min(station_flow, max_flow);
 }
 
 
