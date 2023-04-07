@@ -1,12 +1,5 @@
 #include "StationTrip.h"
 
-int Trip::getId() const {
-    return id;
-}
-
-void Trip::setId(int id) {
-    Trip::id = id;
-}
 
 const string &Station::getName() const {
     return name;
@@ -48,9 +41,9 @@ void Station::setLine(const string &line) {
     Station::line = line;
 }
 
-Station::Station(int id, const string &name, const string &district, const string &municipality, const string &township,
+Station::Station(const string &name, const string &district, const string &municipality, const string &township,
                  const string &line) {
-    this->id = id;
+
     this->name = name;
     this->district = district;
     this->municipality = municipality;

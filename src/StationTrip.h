@@ -14,7 +14,7 @@ class Trip;
 
 class Station {
 public:
-    Station(int id, const string &name, const string &district, const string &municipality, const string &township,
+    Station(const string &name, const string &district, const string &municipality, const string &township,
             const string &line);
 
     const string &getName() const;
@@ -60,7 +60,6 @@ public:
     void setIncoming(const vector<Trip *> &incoming);
 
 private:
-    int id;
     string name, district, municipality, township, line;
     vector<Trip *> trips; // edges of the graph
     bool visited = false;
@@ -102,13 +101,8 @@ public:
 
     void setReverse(Trip *reverse);
 
-public:
-    int getId() const;
-
-    void setId(int id);
 
 private:
-    int id;
     Station *source;
     Station *destination;
     int capacity;

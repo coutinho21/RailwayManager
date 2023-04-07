@@ -8,7 +8,8 @@ void showMenu() {
     cout << "3) Maximum simultaneously travelling trains between two stations\n"; //2.1 Max Flow
     cout << "4) Pairs of stations that require most amount of trains\n"; //2.2 Max Max-flow between all pairs of stations
     cout << "5) Top-k municipalities or districts, regarding transportation needs\n";  //2.3 List of k districts or municipalities according to their max flow
-    cout << "6) Maximum simultaneously arriving trains at a station\n"; //2.4
+    cout << "6) Maximum simultaneously arriving trains at a station\n";//2.4
+    cout << "7) Maximum trains that can simultaneously travel between two specific stations with minimum cost for the company\n";
     cout << "\nChoose an option: ";
 }
 
@@ -38,11 +39,13 @@ void listStationAttributes(Graph railway){
                 break;
             case 3:
                 cout << "\nStation name: ";
+                cin.ignore(100000, '\n');
                 stationName = readInput();
                 railway.getStations()[stationName]->printConnections();
                 break;
             case 4:
                 cout << "\nStation name: ";
+                cin.ignore(100000, '\n');
                 stationName = readInput();
                 railway.printConnectionsTo(stationName);
                 break;
@@ -65,7 +68,7 @@ int readOption() {
 
 string readInput(){
     string input;
-    getline(cin >> ws, input);
+    getline(cin, input);
     cout << endl;
     return input;
 }

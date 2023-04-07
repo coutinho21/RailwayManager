@@ -1,12 +1,14 @@
 #include <map>
 #include "src/AuxMain.h"
+#include <locale>
 
 Graph railway;
 
 int main() {
+    setlocale(LC_ALL, "pt_PT.UTF-8");
     railway.readFiles("../data/stations.csv", "../data/network.csv");
     int option, option2;
-    int k,total_flow;
+    int k,total_flow, maximum_arrive;
     string station,stationName, stationName2;
     do {
         showMenu();
@@ -20,6 +22,7 @@ int main() {
                 break;
             case 2:
                 cout << "\nFrom (Station Name): ";
+                cin.ignore(100000, '\n');
                 stationName = readInput();
                 cout << "To (Station name): ";
                 stationName2 = readInput();
@@ -27,6 +30,7 @@ int main() {
                 break;
             case 3:
                 cout << "\nFrom (Station Name): ";
+                cin.ignore(100000, '\n');
                 stationName = readInput();
                 cout << "To (Station name): ";
                 stationName2 = readInput();
@@ -60,8 +64,20 @@ int main() {
                 break;
             case 6:
                 cout << "\nStation name: ";
+                cin.ignore(100000, '\n');
                 station = readInput();
-                cout << railway.maxTrainsArrival(station) << " trains can arrive at " << stationName << " simultaneously.\n";
+                maximum_arrive = railway.maxTrainsArrival(station);
+                if(maximum_arrive == 0){
+                    break;
+                }
+                cout << maximum_arrive << " trains can arrive at " << station << " simultaneously.\n";
+                break;
+            case 7:
+                cout << "\nFrom (Station Name): ";
+                stationName = readInput();
+                cout << "To (Station name): ";
+                stationName2 = readInput();
+                railway.minCostMaxFlow(stationName, stationName2);
                 break;
             default:
                 cout << "\nInvalid option. Try again.\n";

@@ -45,7 +45,7 @@ void Graph::readFiles(const string &file1, const string &file2) {
                 temp.push_back(tempstr);
             }
             counter++;
-            auto *s = new Station(counter, temp[0], temp[1], temp[2], temp[3], temp[4]);
+            auto *s = new Station(temp[0], temp[1], temp[2], temp[3], temp[4]);
             this->addStation(s);
         }
 
@@ -419,15 +419,24 @@ void Graph::maxFlowMunicipality(int k) {
 }
 
 int Graph::maxTrainsArrival(const string &station) {
+    int sf = 0;
     // add super source and super sink nodes
     string super_source = "super_source";
-    auto *super_source_station = new Station(0,super_source, "sp", "sp","sp","sp");
+    auto *super_source_station = new Station(super_source, "sp", "sp","sp","sp");
 
     stations[super_source] = super_source_station;
     for (auto &s: stations) {
         if (s.first != station && stations[s.first]->getTrips().size() == 1) {
             addEdge(s.second,super_source_station, INT_MAX, "SP");
         }
+        if (s.first == station) {
+            sf = 1;
+        }
+    }
+
+    if(sf == 0) {
+        cout << "Invalid Station Name." << endl;
+        return 0;
     }
 
 
@@ -449,6 +458,10 @@ int Graph::maxTrainsArrival(const string &station) {
 
     // return the maximum number of trains that can simultaneously arrive at the given station
     return min(station_flow, max_flow);
+}
+
+void Graph::minCostMaxFlow(const string& source, const string& destination) {
+
 }
 
 
