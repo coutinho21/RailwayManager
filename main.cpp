@@ -9,6 +9,7 @@ int main() {
     railway.readFiles("../data/stations.csv", "../data/network.csv");
     int option, option2;
     int k,total_flow, maximum_arrive;
+    pair<int,int>min_cost_max_flow;
     string station,stationName, stationName2;
     do {
         showMenu();
@@ -74,10 +75,12 @@ int main() {
                 break;
             case 7:
                 cout << "\nFrom (Station Name): ";
+                cin.ignore(100000, '\n');
                 stationName = readInput();
                 cout << "To (Station name): ";
                 stationName2 = readInput();
-                railway.minCostMaxFlow(stationName, stationName2);
+                min_cost_max_flow = railway.minCostMaxFlow(stationName, stationName2);
+                cout << "It is possible for " << min_cost_max_flow.first << " trains to travel simultaneously between " << stationName << " and " << stationName2 << " with a minimum cost of " << min_cost_max_flow.second << " euros.\n";
                 break;
             default:
                 cout << "\nInvalid option. Try again.\n";

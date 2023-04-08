@@ -159,5 +159,3 @@ void Station::removeTrip(Station *destination) {
         }
     }
 }
-
-

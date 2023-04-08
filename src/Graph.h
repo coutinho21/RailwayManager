@@ -61,7 +61,7 @@ public:
 
     int maxTrainsArrival(const string& station);
 
-    void minCostMaxFlow(const string& source, const string& destination);
+    pair<int,int> minCostMaxFlow(const string& source, const string& destination);
 
 private:
     unordered_map<string, Station *> stations; // nodes of the graph

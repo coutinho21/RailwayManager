@@ -1,5 +1,6 @@
 #include <map>
 #include "Graph.h"
+#include "Tripaux.h"
 
 
 void Graph::readFiles(const string &file1, const string &file2) {
@@ -460,11 +461,92 @@ int Graph::maxTrainsArrival(const string &station) {
     return min(station_flow, max_flow);
 }
 
-void Graph::minCostMaxFlow(const string& source, const string& destination) {
 
+pair<int,int> Graph::minCostMaxFlow(const string& source, const string& destination) {
+    int n = stations.size();
+    unordered_map<string, int> stationIndex(n);
+    vector<vector<Tripaux>> graph(n);
+    int index = 0;
+    for (auto& it : stations) {
+        stationIndex[it.first] = index++;
+        Station* station = it.second;
+        for (Trip* trip : station->getTrips()) {
+            int sourceIndex = stationIndex[trip->getSource()->getName()];
+            int destIndex = stationIndex[trip->getDestination()->getName()];
+            graph[sourceIndex].emplace_back(trip->getSource(), trip->getDestination(), trip->getCapacity(), (trip->getService() == "STANDARD" ? 2 : 4), (int)graph[destIndex].size());
+            graph[destIndex].emplace_back(trip->getDestination(), trip->getSource(), 0, -(trip->getService() == "STANDARD" ? 2 : 4), (int)graph[sourceIndex].size() - 1);
+        }
+    }
+    int sourceIndex = stationIndex[source];
+    int sinkIndex = stationIndex[destination];
+    int maxFlow = 0;
+    int minCost = 0;
+
+    while (true) {
+        vector<int> dist(n, INT_MAX);
+        vector<int> parent(n, -1);
+        vector<int> parentEdge(n, -1);
+        vector<bool> inQueue(n, false);
+
+        dist[sourceIndex] = 0;
+        queue<int> q;
+        q.push(sourceIndex);
+        inQueue[sourceIndex] = true;
+
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            inQueue[u] = false;
+
+            for (int i = 0; i < graph[u].size(); i++) {
+                Tripaux& e = graph[u][i];
+                int v = stationIndex[e.getDestination()->getName()];
+                int w = e.getCost();
+
+                if (e.capacity == 0) continue;
+
+                int newDist = dist[u] + w;
+                if (newDist < dist[v]) {
+                    dist[v] = newDist;
+                    parent[v] = u;
+                    parentEdge[v] = i;
+
+                    if (!inQueue[v]) {
+                        q.push(v);
+                        inQueue[v] = true;
+                    }
+                }
+            }
+        }
+
+        if (parent[sinkIndex] == -1) break;
+
+        int u = sinkIndex;
+        int flow = INT_MAX;
+
+        while (u != sourceIndex) {
+            int v = parent[u];
+            int i = parentEdge[u];
+            flow = min(flow, graph[v][i].capacity);
+            u = v;
+        }
+
+        u = sinkIndex;
+
+        while (u != sourceIndex) {
+            int v = parent[u];
+            int i = parentEdge[u];
+            graph[v][i].capacity -= flow;
+            int revIndex = graph[v][i].getRev();
+            if (revIndex >= 0 && revIndex < graph[u].size()) {
+                graph[u][revIndex].capacity += flow;
+            }
+            minCost += flow * graph[v][i].getCost();
+            u = v;
+        }
+
+        maxFlow += flow;
+    }
+
+    return {maxFlow, minCost};
 }
-
-
-
-
-
