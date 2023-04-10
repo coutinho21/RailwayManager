@@ -2,7 +2,12 @@
 #include "Graph.h"
 #include "Tripaux.h"
 
-
+/**
+ * @brief Constructor of the Graph class
+ * @param file1
+ * @param file2
+ * This class reads the csv files with the data set and creates the graph
+ */
 void Graph::readFiles(const string &file1, const string &file2) {
     ifstream stationsFile, linesFile;
     string line;
@@ -77,6 +82,10 @@ void Graph::readFiles(const string &file1, const string &file2) {
     } else cout << "Unable to open file" << endl;
 }
 
+/**
+ * @brief Adds a station to the graph
+ * @param pStation
+ */
 void Graph::addStation(Station *pStation) {
     if (stations.find(pStation->getName()) == stations.end()) {
         stations[pStation->getName()] = pStation;
@@ -88,16 +97,33 @@ Station *Graph::getStation(const string &basicString) {
     return stations[basicString];
 }
 
+/**
+ * @brief Adds an edge to the graph
+ * @param source
+ * @param destination
+ * @param capacity
+ * @param service
+ */
 void Graph::addEdge(Station *source, Station *destination, int capacity, const string &service) {
     source->addTrip(destination, capacity, service);
     destination->addTrip(source, capacity, service);
 }
 
+/**
+ * @brief Removes an edge from the graph
+ * @param source
+ * @param destination
+ */
 void Graph::removeEdge(Station *source, Station *destination) {
     source->removeTrip(destination);
     destination->removeTrip(source);
 }
 
+/**
+ * @brief Adds a line to the graph
+ * @param basicString
+ * @param pStation
+ */
 void Graph::addLine(const string &basicString, Station *pStation) {
     lines[basicString].push_back(pStation);
 }
@@ -126,6 +152,9 @@ void Graph::setSize(int size) {
     Graph::size = size;
 }
 
+/**
+ * @brief Prints all the stations in the graph
+ */
 void Graph::printStations() {
     cout << "\nAll stations:" << endl;
     for (auto &station: this->stations)
@@ -136,23 +165,35 @@ void Graph::printStations() {
              << "\tStation line -> " << station.second->getLine() << endl << "\n\n";
 }
 
+/**
+ * @brief Prints all the connections in from all stations of the graph
+ */
 void Graph::printAllConnections() {
     cout << "\nAll connections:" << endl;
     for (auto &station: this->stations)
         station.second->printConnections();
 }
 
+/**
+ * @brief Prints all the connections in from a specific station
+ * @param stationName
+ */
 void Graph::printConnectionsTo(const string &stationName) {
     cout << "\nConnections to " << stationName << ':' << endl;
-    for (auto &station: this->stations) {
-        for (auto &connection: station.second->getTrips()) {
+    for (auto &station: this->stations)
+        for (auto &connection: station.second->getTrips())
             if (connection->getDestination()->getName() == stationName)
                 cout << '\t' << station.second->getName() << " -> " << connection->getDestination()->getName() << endl;
-        }
-    }
 
 }
 
+/**
+ * @brief Dijkstra's algorithm
+ * @param stationName
+ * @param destination
+ * This function is used to find the shortest path between two stations using the Dijkstra's algorithm
+ * Time Complexity: O(|V| + |E|), where |V| is the number of vertices and |E| is the number of edges
+ */
 void Graph::dijkstra(const string &source, const string &destination) {
     unordered_map<string, Station *> visited;
     unordered_map<string, Station *> unvisited;
@@ -224,16 +265,26 @@ void Graph::dijkstra(const string &source, const string &destination) {
     cout << endl;
 }
 
+/**
+ * @brief Finds a station in the graph
+ * @param source
+ * @return the station if found, nullptr otherwise
+ */
 Station *Graph::findStation(const string &source) {
-    for (const auto &station: stations) {
-        if (station.first == source) {
+    for (const auto &station: stations)
+        if (station.first == source)
             return station.second;
-        }
-    }
     return nullptr;
 }
 
-
+/**
+ * @brief BFS using Edmonds-Karp algorithm
+ * @param source
+ * @param destination
+ * @return the station if found, nullptr otherwise
+ * This function is used in the maxFlow function using the Edmonds-Karp algorithm
+ * Time Complexity: O(|V| * |E|^2) where |V| is the number of vertices and |E| is the number of edges
+ */
 bool Graph::bfskarp(const string &source, const string &destination) {
     std::queue<Station *> q;
     for (auto station: stations) {
@@ -274,7 +325,14 @@ bool Graph::bfskarp(const string &source, const string &destination) {
     return false;
 }
 
-
+/**
+ * @brief Max Flow using Edmonds-Karp algorithm
+ * @param source
+ * @param destination
+ * @return the maximum flow (capacity) between two stations
+ * This function is uses the Edmonds-Karp algorithm to find the maximum flow between two stations
+ * Time Complexity: O(|V| * |E|^2) where |V| is the number of vertices and |E| is the number of edges
+ */
 int Graph::maxFlow(const string &source, const string &destination) {
     int sf = 1;
     int df = 1;
@@ -323,9 +381,14 @@ int Graph::maxFlow(const string &source, const string &destination) {
     return total_flow;
 }
 
+/**
+ * @brief Does the maxFlow function for all the stations
+ * In the end, prints the stations that require the most amount of trains
+ * Complexity: O( |V|^2 * (|V| * |E|^2)) where |V| is the number of vertices and |E| is the number of edges
+ */
 void Graph::maxMaxFlow() {
     int res = 0;
-    int temp = 0;
+    int temp;
     vector<pair<string, string>> allMaxFlow;
     unordered_map<string, int> st_temp;
     unordered_map<string, Station *> auxStations = stations;
@@ -356,9 +419,14 @@ void Graph::maxMaxFlow() {
         cout << "- " << st.first << endl;
 
     }
-    // return allMaxFlow;
 }
 
+/**
+ * @brief Does the maxFlow function for every district
+ * @param k where k is the number of districts
+ * In the end, prints the the k districts that require the most amount of trains
+ * Complexity: O(|V| * |E|^2) where |V| is the number of vertices and |E| is the number of edges
+ */
 void Graph::maxFlowDistrict(int k) {
     int ktemp = k;
     unordered_map<string, int> d_temp;
@@ -374,7 +442,7 @@ void Graph::maxFlowDistrict(int k) {
             d_temp[station.second->getDistrict()] += maxFlow(station.first, station2.first);
         }
     }
-    while (k > 0) {              //ordenar distritos ordem decrescente de maxflow
+    while (k > 0) {
         int max = 0;
         string maxD;
         for (const auto &d: d_temp) {
@@ -389,6 +457,12 @@ void Graph::maxFlowDistrict(int k) {
     }
 }
 
+/**
+ * @brief Does the maxFlow function for every municipality
+ * @param k where k is the number of municipalities
+ * In the end, prints the the k municipalities that require the most amount of trains
+ * Complexity: O(|V| * |E|^2) where |V| is the number of vertices and |E| is the number of edges
+ */
 void Graph::maxFlowMunicipality(int k) {
     int ktemp = k;
     unordered_map<string, int> d_temp;
@@ -404,7 +478,7 @@ void Graph::maxFlowMunicipality(int k) {
             d_temp[station.second->getMunicipality()] += maxFlow(station.first, station2.first);
         }
     }
-    while (k > 0) {              //ordenar municipios ordem decrescente de maxflow
+    while (k > 0) {
         int max = 0;
         string maxD;
         for (const auto &d: d_temp) {
@@ -419,9 +493,14 @@ void Graph::maxFlowMunicipality(int k) {
     }
 }
 
+/**
+ * @brief Calculates the maximum number of trains that can arrive at a station
+ * @param station
+ * @return the maximum number of trains that can arrive at a given station
+ * Complexity: O(|V| * |E|^2) where |V| is the number of vertices and |E| is the number of edges
+ */
 int Graph::maxTrainsArrival(const string &station) {
     int sf = 0;
-    // add super source and super sink nodes
     string super_source = "super_source";
     auto *super_source_station = new Station(super_source, "sp", "sp","sp","sp");
 
@@ -461,7 +540,14 @@ int Graph::maxTrainsArrival(const string &station) {
     return min(station_flow, max_flow);
 }
 
-
+/**
+ * @brief Calculates the maximum number of trains that can travel between two stations with minimum cost for the company
+ * @param source
+ * @param destination
+ * @return a pair with the maximum trains and the minimum cost
+ * Uses BFS algorithm
+ * Complexity: O(|V| + |E|) where |V| is the number of vertices and |E| is the number of edges
+ */
 pair<int,int> Graph::minCostMaxFlow(const string& source, const string& destination) {
     int n = stations.size();
     unordered_map<string, int> stationIndex(n);
@@ -547,6 +633,5 @@ pair<int,int> Graph::minCostMaxFlow(const string& source, const string& destinat
 
         maxFlow += flow;
     }
-
     return {maxFlow, minCost};
 }

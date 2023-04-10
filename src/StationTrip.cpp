@@ -43,7 +43,6 @@ void Station::setLine(const string &line) {
 
 Station::Station(const string &name, const string &district, const string &municipality, const string &township,
                  const string &line) {
-
     this->name = name;
     this->district = district;
     this->municipality = municipality;
@@ -51,6 +50,12 @@ Station::Station(const string &name, const string &district, const string &munic
     this->line = line;
 }
 
+/**
+ * @brief Adds a trip to the station
+ * @param destination
+ * @param capacity
+ * @param service
+ */
 void Station::addTrip(Station *destination, int capacity, const string &service) {
     Trip *trip = new Trip(this, destination, capacity, service);
     trips.push_back(trip);
@@ -72,6 +77,9 @@ void Station::setVisited(bool visited) {
     Station::visited = visited;
 }
 
+/**
+ * @brief Prints all the connections of a station
+ */
 void Station::printConnections() {
     cout << "\nStation: " << name << endl;
     for (auto &trip : trips) {
@@ -151,6 +159,10 @@ void Trip::setReverse(Trip *reverse) {
     Trip::reverse = reverse;
 }
 
+/**
+ * @brief Removes a trip from the station
+ * @param destination
+ */
 void Station::removeTrip(Station *destination) {
     for (int i = 0; i < trips.size(); i++) {
         if (trips[i]->getDestination() == destination) {
