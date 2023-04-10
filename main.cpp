@@ -56,7 +56,7 @@ int main() {
                     railway.maxFlowDistrict(k);
                 }
                 else if(option2 == 2){
-                    cout << "Top k districts: ";
+                    cout << "Top k municipalities: ";
                     k = readOption();
                     railway.maxFlowMunicipality(k);
                 }
