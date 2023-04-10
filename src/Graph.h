@@ -10,8 +10,9 @@
 
 using namespace std;
 
-// Graph class represents a directed graph
-
+/**
+ * @brief This class represents a directed graph
+ */
 class Graph {
 public:
     void readFiles(const string &file1, const string &file2);
@@ -67,8 +68,6 @@ private:
     unordered_map<string, Station *> stations; // nodes of the graph
     unordered_map<string, vector<Station *>> lines; // lines of the trains
     int size{};
-
-
 };
 
 

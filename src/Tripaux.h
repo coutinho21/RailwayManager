@@ -1,13 +1,12 @@
-
-
 #ifndef RAILWAYMANAGER_TRIPAUX_H
 #define RAILWAYMANAGER_TRIPAUX_H
 
-
 #include "StationTrip.h"
 
+/**
+ * @brief This class represents a trip between two stations
+ */
 class Tripaux {
-
 public:
     int capacity;
     Tripaux(Station *source, Station *destination, int capacity, int cost, int rev);
@@ -40,4 +39,4 @@ private:
 };
 
 
-#endif //RAILWAYMANAGER_TRIPAUX_H
+#endif

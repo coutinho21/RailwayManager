@@ -10,8 +10,9 @@ using namespace std;
 
 class Trip;
 
-// Station class represents the nodes of the graph
-
+/**
+ * @brief This class represents the nodes of the graph
+ */
 class Station {
 public:
     Station(const string &name, const string &district, const string &municipality, const string &township,
@@ -65,16 +66,14 @@ private:
     bool visited = false;
     Trip *path = nullptr;
     vector<Trip *> incoming;
-
-
 };
 
 
-// Trip class represents the edges of the graph
-
+/**
+ * @brief This class represents the edges of the graph
+ */
 class Trip {
 public:
-
     Trip(Station *source, Station *destination, int capacity, const string &service);
 
     Station *getSource() const;
@@ -100,7 +99,6 @@ public:
     Trip *getReverse() const;
 
     void setReverse(Trip *reverse);
-
 
 private:
     Station *source;
